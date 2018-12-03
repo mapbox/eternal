@@ -1,0 +1,24 @@
+language: cpp
+
+services:
+  - docker
+
+env:
+  - BUILDTYPE=Debug
+  - BUILDTYPE=Release
+
+compiler:
+  - gcc-4.9
+  - gcc-5
+  - gcc-6
+  - gcc-7
+  - gcc-8
+  - clang-3.9
+  - clang-4
+  - clang-5
+  - clang-6
+  - clang-7
+
+before_install: docker pull mbgl/linux-${TRAVIS_COMPILER}
+
+script: make docker-linux-${TRAVIS_COMPILER}
