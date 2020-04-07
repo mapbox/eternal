@@ -17,6 +17,13 @@ struct Color {
         return r == rhs.r && g == rhs.g && b == rhs.b &&
                (a >= rhs.a ? a - rhs.a : rhs.a - a) < std::numeric_limits<float>::epsilon();
     }
+
+    constexpr bool operator<(const Color& rhs) const {
+        return r < rhs.r ||
+            (!(rhs.r < r) && g < rhs.g) ||
+            (!(rhs.g < g) && b < rhs.b) ||
+            (!(rhs.b < b) && a < rhs.a);
+    }
 };
 
 #define COLORS                                                                                     \

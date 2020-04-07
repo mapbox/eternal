@@ -1,5 +1,7 @@
 #include "data.hpp"
 
+#include <algorithm>
+
 #include <cassert>
 
 
@@ -67,6 +69,8 @@ static void test() {
     for (auto range = multi_colors.equal_range("yellow"); range.first != range.second; ++range.first) {
         (void)range;
     }
+
+    assert(std::is_sorted(colors.begin(), colors.end()));
 }
 
 int main(int argc, char* argv[]) {
