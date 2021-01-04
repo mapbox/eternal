@@ -163,7 +163,7 @@ public:
         return *this;
     }
 
-    constexpr std::size_t operator-(const iterator& rhs) const noexcept {
+    constexpr std::ptrdiff_t operator-(const iterator& rhs) const noexcept {
         return pos - rhs.pos;
     }
 
@@ -331,6 +331,19 @@ static constexpr auto hash_map(const std::pair<const Key, const Value> (&items)[
 
 } // namespace eternal
 } // namespace mapbox
+
+namespace std {
+
+template <typename Element>
+struct iterator_traits<::mapbox::eternal::iterator<Element>> {
+    using difference_type = std::ptrdiff_t;
+    using value_type = typename Element::value_type;
+    using pointer = Element*;
+    using reference = Element&;
+    using iterator_category = std::bidirectional_iterator_tag;
+};
+
+} // namespace std
 
 // mapbox::eternal::string
 
