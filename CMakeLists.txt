@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(eternal INTERFACE)
-target_include_directories(eternal SYSTEM INTERFACE ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(eternal SYSTEM INTERFACE ./include)
 
 option(WITH_TESTS "Enable tests" ON)
 if (WITH_TESTS)
