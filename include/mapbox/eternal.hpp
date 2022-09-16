@@ -349,59 +349,64 @@ constexpr std::size_t hash_prime =
                        std::integral_constant<uint64_t, 0x100000001B3>>::value;
 
 // FNV-1a hash
-constexpr static std::size_t str_hash(const char* str,
+template <typename CharT>
+constexpr static std::size_t str_hash(const CharT* str,
                                       const std::size_t value = hash_offset) noexcept {
     return *str ? str_hash(str + 1, (value ^ static_cast<std::size_t>(*str)) * hash_prime) : value;
 }
 
-constexpr bool str_less(const char* lhs, const char* rhs) noexcept {
+template <typename CharT> constexpr bool str_less(const CharT* lhs, const CharT* rhs) noexcept {
     return *lhs && *rhs && *lhs == *rhs ? str_less(lhs + 1, rhs + 1) : *lhs < *rhs;
 }
 
-constexpr bool str_equal(const char* lhs, const char* rhs) noexcept {
-    return *lhs == *rhs && (*lhs == '\0' || str_equal(lhs + 1, rhs + 1));
+template <typename CharT> constexpr bool str_equal(const CharT* lhs, const CharT* rhs) noexcept {
+    return *lhs == *rhs && (*lhs == static_cast<CharT>(0) || str_equal(lhs + 1, rhs + 1));
 }
 
 } // namespace impl
 
-class string {
+class basic_string {
 private:
-    const char* data_;
+    const CharT* data_;
 
 public:
-    constexpr string(char const* data) noexcept : data_(data) {
+    constexpr basic_string(const CharT* data) noexcept : data_(data) {
     }
 
-    constexpr string(const string&) noexcept = default;
-    constexpr string(string&&) noexcept = default;
-    MAPBOX_ETERNAL_CONSTEXPR string& operator=(const string&) noexcept = default;
-    MAPBOX_ETERNAL_CONSTEXPR string& operator=(string&&) noexcept = default;
+    constexpr basic_string(const basic_string&) noexcept = default;
+    constexpr basic_string(basic_string&&) noexcept = default;
+    MAPBOX_ETERNAL_CONSTEXPR basic_string& operator=(const basic_string&) noexcept = default;
+    MAPBOX_ETERNAL_CONSTEXPR basic_string& operator=(basic_string&&) noexcept = default;
 
-    constexpr bool operator<(const string& rhs) const noexcept {
+    constexpr bool operator<(const basic_string& rhs) const noexcept {
         return impl::str_less(data_, rhs.data_);
     }
 
-    constexpr bool operator==(const string& rhs) const noexcept {
+    constexpr bool operator==(const basic_string& rhs) const noexcept {
         return impl::str_equal(data_, rhs.data_);
     }
 
-    constexpr const char* data() const noexcept {
+    constexpr const CharT* data() const noexcept {
         return data_;
     }
 
-    constexpr const char* c_str() const noexcept {
+    constexpr const CharT* c_str() const noexcept {
         return data_;
     }
 };
+
+
+using string = basic_string<char>;
+using wstring = basic_string<wchar_t>;
 
 } // namespace eternal
 } // namespace mapbox
 
 namespace std {
 
-template <>
-struct hash<::mapbox::eternal::string> {
-    constexpr std::size_t operator()(const ::mapbox::eternal::string& str) const {
+template <typename CharT>
+struct hash<::mapbox::eternal::basic_string<CharT>> {
+    constexpr std::size_t operator()(const ::mapbox::eternal::basic_string<CharT>& str) const {
         return ::mapbox::eternal::impl::str_hash(str.data());
     }
 };
