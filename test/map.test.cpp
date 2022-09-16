@@ -21,6 +21,11 @@ MAPBOX_ETERNAL_CONSTEXPR const auto hash_colors = mapbox::eternal::hash_map<mapb
     { "white", { 255, 255, 255, 1 } },
 });
 
+MAPBOX_ETERNAL_CONSTEXPR const auto hash_colors_wide = mapbox::eternal::hash_map<mapbox::eternal::wstring, Color>({
+    { L"yellow", { 255, 255, 0, 1 } },
+    { L"yellow", { 255, 220, 0, 1 } },  // a darker yellow
+});
+
 // GCC 4.9 compatibility
 #if MAPBOX_ETERNAL_IS_CONSTEXPR
 #define CONSTEXPR_ASSERT(value, str) static_assert(value, str)
@@ -57,6 +62,9 @@ static void test() {
     CONSTEXPR_ASSERT(hash_colors.equal_range("white").first == hash_colors.find("white"), "white range returns the correct begin");
     CONSTEXPR_ASSERT(hash_colors.equal_range("yellow").first == hash_colors.find("yellow"), "yellow range returns the correct begin");
     CONSTEXPR_ASSERT(hash_colors.count("yellow") == 2, "has 2 yellows");
+    
+    CONSTEXPR_ASSERT(hash_colors_wide.find(L"yellow") != hash_colors_wide.end(), "colors contains yellow (wide)");
+    CONSTEXPR_ASSERT(hash_colors_wide.count(L"yellow") == 2, "has 2 yellows (wide)");
 
     // Can use range-for
     for (auto& x : colors) {
