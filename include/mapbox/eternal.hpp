@@ -365,6 +365,7 @@ template <typename CharT> constexpr bool str_equal(const CharT* lhs, const CharT
 
 } // namespace impl
 
+template <typename CharT>
 class basic_string {
 private:
     const CharT* data_;
